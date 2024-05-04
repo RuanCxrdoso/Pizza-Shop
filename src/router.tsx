@@ -4,6 +4,7 @@ import { AppLayout } from './pages/_layouts/AppLayout'
 import { AuthLayout } from './pages/_layouts/AuthLayout'
 import { Dashboard } from './pages/app/Dashboard'
 import { SignIn } from './pages/auth/Sign-in'
+import { SignUp } from './pages/auth/Sign-up'
 
 export function Router() {
   return (
@@ -14,6 +15,7 @@ export function Router() {
 
       <Route path="/" element={<AuthLayout />}>
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
       </Route>
     </Routes>
   )
