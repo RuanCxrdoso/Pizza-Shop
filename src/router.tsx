@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import { AppLayout } from './pages/_layouts/AppLayout'
 import { AuthLayout } from './pages/_layouts/AuthLayout'
 import { Dashboard } from './pages/app/Dashboard'
-import { Orders } from './pages/app/orders/orders'
+import { Orders } from './pages/app/orders/Orders'
 import { SignIn } from './pages/auth/Sign-in'
 import { SignUp } from './pages/auth/Sign-up'
 
