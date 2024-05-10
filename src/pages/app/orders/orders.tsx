@@ -8,8 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table'
-import { OrderTableFilters } from './order-table-filters'
-import { OrderTableRow } from './order-table-row'
+import { OrderTableFilters } from './components/order-table-filters'
+import { OrderTableRow } from './components/order-table-row'
 
 export function Orders() {
   return (
