@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { AppLayout } from './pages/_layouts/AppLayout'
-import { AuthLayout } from './pages/_layouts/AuthLayout'
+import { AppLayout } from './pages/_layouts/appLayout'
+import { AuthLayout } from './pages/_layouts/authLayout'
 import { NotFound } from './pages/404'
-import { Dashboard } from './pages/app/dashboard/Dashboard'
-import { Orders } from './pages/app/orders/Orders'
-import { SignIn } from './pages/auth/Sign-in'
-import { SignUp } from './pages/auth/Sign-up'
+import { Dashboard } from './pages/app/dashboard/dashboard'
+import { Orders } from './pages/app/orders/orders'
+import { SignIn } from './pages/auth/sign-in'
+import { SignUp } from './pages/auth/sign-up'
 
 // export function Router() {
 //   return (
