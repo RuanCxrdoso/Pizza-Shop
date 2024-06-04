@@ -24,7 +24,7 @@ import { Textarea } from './ui/textarea'
 
 const storeProfileSchema = zod.object({
   name: zod.string().min(1),
-  description: zod.string(),
+  description: zod.string().nullable(),
 })
 
 type StoreProfileProps = zod.infer<typeof storeProfileSchema>
@@ -49,27 +49,44 @@ export function StoreProfileDialog() {
       description: managedRestaurant?.description ?? '',
     },
   })
+  // Atualiza o dados do restaurante que estão em cache, apartir da ação de 'mutação' feita na req PUT updateProfile
+  function updateManagedRestaurantCache({
+    name,
+    description,
+  }: StoreProfileProps) {
+    const cached = queryClient.getQueryData<GetManagedRestaurantResponse>([
+      'managed-restaurant',
+    ])
+
+    if (cached) {
+      queryClient.setQueryData<GetManagedRestaurantResponse>(
+        ['managed-restaurant'],
+        {
+          ...cached,
+          name,
+          description,
+        },
+      )
+    }
+    // retorno os dados antigos para usar caso a req PUT dê erro
+    return { cached }
+  }
 
   const { mutateAsync: updateProfileFn } = useMutation({
     mutationFn: updateProfile,
-    onSuccess: (_, { name, description }) => {
-      const cached = queryClient.getQueryData<GetManagedRestaurantResponse>([
-        'managed-restaurant',
-      ])
+    onMutate: ({ name, description }) => {
+      const { cached } = updateManagedRestaurantCache({ name, description })
 
-      if (cached) {
-        queryClient.setQueryData<GetManagedRestaurantResponse>(
-          ['managed-restaurant'],
-          {
-            ...cached,
-            name,
-            description,
-          },
-        )
+      return { previousProfile: cached }
+    },
+    onError: (_, __, context) => {
+      // Caso a req PUT dê erro, eu recupero o dados antigos pelo contexto, e coloco novamente em cache
+      if (context?.previousProfile) {
+        updateManagedRestaurantCache(context.previousProfile)
       }
     },
   })
-
+  // Atualiza os dados do restaurante no back via PUT (mutation)
   async function handleUpdateProfile(data: StoreProfileProps) {
     try {
       await updateProfileFn({

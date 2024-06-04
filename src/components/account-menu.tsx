@@ -27,7 +27,7 @@ export function AccountMenu() {
     useQuery({
       queryFn: getManagedRestaurant,
       queryKey: ['managed-restaurant'],
-      staleTime: Infinity,
+      staleTime: Infinity, // tempo em que os dados dessa query serão marcados como 'desatualizados'
     })
 
   return (
