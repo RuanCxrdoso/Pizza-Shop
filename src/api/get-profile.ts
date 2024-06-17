@@ -10,8 +10,8 @@ interface GetProfileResponse {
   updatedAt: Date | null
 }
 
-export async function getProfile(): Promise<GetProfileResponse> {
-  const response = await api.get('/me')
+export async function getProfile() {
+  const response = await api.get<GetProfileResponse>('/me')
 
   return response.data
 }
