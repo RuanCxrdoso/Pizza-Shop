@@ -1,4 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
+import { setDate, subDays } from 'date-fns'
+import { useMemo, useState } from 'react'
+import { DateRange } from 'react-day-picker'
 import {
   CartesianGrid,
   Line,
@@ -10,6 +13,8 @@ import {
 import colors from 'tailwindcss/colors'
 
 import { getDailyRevenueInPeriod } from '@/api/get-daily-revenue-in-period'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { Label } from '@/components/ui/label'
 
 import {
   Card,
@@ -20,10 +25,28 @@ import {
 } from '../../../../components/ui/card'
 
 export function RevenueChart() {
-  const { data: dailyRevenueInPeriod } = useQuery({
-    queryKey: ['metrics', 'daily-revenue-in-period'],
-    queryFn: getDailyRevenueInPeriod,
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 7),
+    to: new Date(),
   })
+
+  const { data: dailyRevenueInPeriod } = useQuery({
+    queryKey: ['metrics', 'daily-revenue-in-period', dateRange],
+    queryFn: () =>
+      getDailyRevenueInPeriod({
+        from: dateRange?.from,
+        to: dateRange?.to,
+      }),
+  })
+
+  const chartData = useMemo(() => {
+    return dailyRevenueInPeriod?.map((item) => {
+      return {
+        date: item.date,
+        receipt: item.receipt / 100,
+      }
+    })
+  }, [dailyRevenueInPeriod])
 
   return (
     <Card className="col-span-6">
@@ -35,12 +58,17 @@ export function RevenueChart() {
 
           <CardDescription>Receita diária no período</CardDescription>
         </div>
+
+        <div className="flex items-center gap-3">
+          <Label>Período</Label>
+          <DateRangePicker date={dateRange} onDateChange={setDateRange} />
+        </div>
       </CardHeader>
 
       <CardContent>
-        {dailyRevenueInPeriod && (
+        {chartData && (
           <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={dailyRevenueInPeriod} style={{ fontSize: 12 }}>
+            <LineChart data={chartData} style={{ fontSize: 12 }}>
               <XAxis dataKey="date" axisLine={false} tickLine={false} dy={16} />
 
               <YAxis
